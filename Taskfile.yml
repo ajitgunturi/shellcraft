@@ -1,0 +1,32 @@
+version: "3"
+
+tasks:
+  lint:
+    desc: Run Shellcraft linters
+    cmds:
+      - shellcheck setup-my-mac.sh lib/*.sh
+      - shfmt -d setup-my-mac.sh lib/*.sh tests/*.bats
+      - markdownlint README.md CONTRIBUTING.md exercises/*.md
+      - if rg --files .github/workflows -g '*.yml' -g '*.yaml' >/dev/null 2>&1; then actionlint; else echo "actionlint skipped"; fi
+      - if rg --files . -g '*.yml' -g '*.yaml' >/dev/null 2>&1; then yamllint .; else echo "yamllint skipped"; fi
+      - if rg --files . -g 'Dockerfile*' >/dev/null 2>&1; then hadolint Dockerfile*; else echo "hadolint skipped"; fi
+  fmt-check:
+    desc: Check shell formatting
+    cmds:
+      - shfmt -d setup-my-mac.sh lib/*.sh tests/*.bats
+  test:
+    desc: Run the Bats suite
+    cmds:
+      - bats tests
+  smoke-fresh:
+    desc: Run the fresh-home smoke scenario
+    cmds:
+      - bats tests/apply_fresh.bats
+  smoke-existing:
+    desc: Run the existing-home smoke scenario
+    cmds:
+      - bats tests/apply_existing.bats
+  doctor:
+    desc: Run Shellcraft doctor in non-mutating mode
+    cmds:
+      - ./setup-my-mac.sh --doctor --profile core

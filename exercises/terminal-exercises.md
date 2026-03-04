@@ -1,5 +1,15 @@
-# 6-Day Terminal Mastery Exercises
-> Tools installed: eza · bat · fd · rg · fzf · zoxide · tmux · lazygit · git-delta · htop · tldr · jq · yq · zsh-autosuggestions · zsh-syntax-highlighting · powerlevel10k
+# Core Profile — 6-Day Terminal Mastery Exercises
+
+Core profile tools: eza · bat · fd · rg · fzf · zoxide · tmux · lazygit ·
+git-delta · htop · tldr · jq · yq · gh · neovim · zsh-autosuggestions ·
+zsh-syntax-highlighting · powerlevel10k
+
+Before you start:
+
+```zsh
+./setup-my-mac.sh --doctor --profile core
+./setup-my-mac.sh --doctor --fix --profile core   # only if doctor reports missing tools
+```
 
 Each day builds on the previous. Budget ~30 minutes per session.
 
@@ -7,7 +17,7 @@ Each day builds on the previous. Budget ~30 minutes per session.
 
 ## Day 1 — Ground Floor: Navigation, Viewing, Searching
 
-**Goal:** Replace the commands you already know with faster equivalents.
+**Goal:** Replace the commands you already know with faster equivalents from the `core` profile.
 
 ### 1.1 — eza (better `ls`)
 
@@ -30,18 +40,19 @@ eza -la --sort=modified   # most recently changed last
 ### 1.2 — bat (better `cat`)
 
 ```zsh
-bat ~/.zshrc              # syntax highlighted, line numbers, git changes marked
-bat -n ~/.zshrc           # line numbers only
-bat -p ~/.zshrc           # plain — no decorations (good for piping)
+bat ~/.config/shellcraft/zshrc.zsh              # managed shell config with syntax highlighting
+bat -n ~/.config/shellcraft/zshrc.zsh           # line numbers only
+bat -p ~/.config/shellcraft/zshrc.zsh           # plain — no decorations (good for piping)
 bat --list-themes         # see available themes
-bat --theme=Dracula ~/.zshrc
+bat --theme=Dracula ~/.config/shellcraft/zshrc.zsh
 
 # bat as a pager for man pages
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 man git                   # try it
 ```
 
-**Exercise:** Use `bat` to view your `.gitconfig`. Notice git-changed lines are highlighted in the gutter.
+**Exercise:** Use `bat` to view `~/.config/shellcraft/gitconfig`. Notice the
+alias and delta sections you use every day.
 
 ---
 
@@ -67,17 +78,19 @@ fd -d 2 . ~/workspace     # max 2 levels deep
 
 ```zsh
 rg "alias"                # search current dir recursively
-rg "alias" ~/.zshrc       # search specific file
+rg "alias" ~/.config/shellcraft/zshrc.zsh       # search specific file
 rg -i "homebrew" ~        # case insensitive
 rg -l "export" ~          # list files that match, not lines
-rg -c "function" ~/.zshrc # count matches per file
+rg -c "function" ~/.config/shellcraft/zshrc.zsh # count matches per file
 rg --type zsh "plugin"    # only in .zsh files
 
 # Context lines (like grep -C)
-rg -C 2 "ZSH_THEME" ~/.zshrc   # 2 lines before and after
+rg -C 2 "ZSH_THEME" ~/.config/shellcraft/zshrc.zsh   # 2 lines before and after
 ```
 
-**Exercise:** Search your `.zshrc` for every line containing "fzf". Then search `~/.oh-my-zsh` for files that contain "powerlevel10k" — only list filenames.
+**Exercise:** Search `~/.config/shellcraft/zshrc.zsh` for every line
+containing `fzf`. Then search `~/.oh-my-zsh` for files that contain
+`powerlevel10k` and list only filenames.
 
 ---
 
@@ -267,7 +280,10 @@ tmux attach                   # re-attach to most recent session
 # Ctrl+a H/J/K/L resize pane (hold to repeat)
 ```
 
-**Exercise:** Split your window into 3 panes: one vertical split, then split the right pane horizontally. Run a different command in each: `htop`, `ll ~`, and `bat ~/.zshrc`. Practice navigating with `Ctrl+a h/j/k/l`.
+**Exercise:** Split your window into 3 panes: one vertical split, then split
+the right pane horizontally. Run a different command in each: `htop`, `ll ~`,
+and `bat ~/.config/shellcraft/zshrc.zsh`. Practice navigating with
+`Ctrl+a h/j/k/l`.
 
 ---
 
@@ -524,12 +540,30 @@ echo 'name: ajit\nrole: dev' | yq .
 
 ---
 
-### 5.5 — Make It Yours: Custom Aliases
+### 5.5 — gh: Inspect GitHub Workflow From The Terminal
 
-Your aliases file lives at `~/.oh-my-zsh/custom/aliases.zsh`. This is the one file you should customize freely — Oh My Zsh loads all `*.zsh` files in that directory automatically, so no source line is needed.
+`gh` is part of the `core` profile. Even before you authenticate it is useful for help, config, and repo discovery.
 
 ```zsh
-bat ~/.oh-my-zsh/custom/aliases.zsh   # view the current file
+gh --version                  # confirm gh is installed
+gh help repo                  # browse repo-related commands
+gh help pr                    # browse PR-related commands
+gh auth status                # see whether this machine is authenticated
+gh config list                # inspect local gh config
+gh alias list                 # show any gh aliases you have defined
+```
+
+**Exercise:** Run `gh auth status`, `gh help repo`, and `gh config list`.
+Confirm you can inspect the CLI locally even if you have not signed in yet.
+
+---
+
+### 5.6 — Make It Yours: Local Shellcraft Overrides
+
+Your user-owned shell customization file lives at:
+
+```zsh
+bat ~/.config/shellcraft/local.zsh
 ```
 
 Suggested additions (pick what fits your workflow):
@@ -555,57 +589,51 @@ alias rm="rm -i"          # confirm before delete
 alias cp="cp -i"          # confirm before overwrite
 
 # --- Quick edits ---
-alias zshconfig="bat ~/.zshrc"
-alias myaliases="bat ~/.oh-my-zsh/custom/aliases.zsh"
-alias editaliases="vim ~/.oh-my-zsh/custom/aliases.zsh && source ~/.oh-my-zsh/custom/aliases.zsh"
+alias shellcraftlocal="bat ~/.config/shellcraft/local.zsh"
+alias editshellcraftlocal="nvim ~/.config/shellcraft/local.zsh"
 ```
 
-After editing, reload without restarting:
+After editing, reload your login shell:
 
 ```zsh
-reload              # your alias: source ~/.zshrc && echo '✔ Reloaded!'
+exec zsh -l
 ```
 
-**Exercise:** Add at least 3 aliases that match your real projects/workflow. Reload and test them.
+**Exercise:** Add at least 3 aliases or exports that match your real workflow
+to `~/.config/shellcraft/local.zsh`. Reload and test them.
 
 ---
 
-### 5.6 — Version Your Customisations
+### 5.7 — Version Your Customisations
 
-Your configs (`~/.zshrc`, `~/.gitconfig`, `~/.tmux.conf`) are plain files at `$HOME` — the setup script regenerates them from its template on every run. Your only freely-edited file is:
-
-```
-~/.oh-my-zsh/custom/aliases.zsh   ← never overwritten by the script
-```
-
-To back it up, copy it into the `setup-my-workstation` repo — your personalisation lives alongside the script that generated your environment.
+The Shellcraft-managed files under `~/.config/shellcraft/` are generated. Your user-owned file is:
 
 ```zsh
-cp ~/.oh-my-zsh/custom/aliases.zsh ~/workspace/setup-my-workstation/aliases.zsh
-
-cd ~/workspace/setup-my-workstation
-git st                                      # see what changed
-git add aliases.zsh
-git cm "add personal aliases"
-git push
+~/.config/shellcraft/local.zsh
 ```
 
-If you haven't pushed the repo to GitHub yet:
+To version your customizations locally first:
 
 ```zsh
-cd ~/workspace/setup-my-workstation
-gh repo create setup-my-workstation --private --source=. --push
+mkdir -p ~/workspace/shellcraft-personal
+cp ~/.config/shellcraft/local.zsh ~/workspace/shellcraft-personal/local.zsh
+
+cd ~/workspace/shellcraft-personal
+git init
+git add local.zsh
+git commit -m "track shellcraft local overrides"
 ```
 
-On your next Mac, the full workflow becomes:
+If you want to publish that repo later and you are authenticated with `gh`,
+you can create a private remote:
 
 ```zsh
-git clone git@github.com:you/setup-my-workstation.git ~/workspace/setup-my-workstation
-cp ~/workspace/setup-my-workstation/aliases.zsh ~/.oh-my-zsh/custom/aliases.zsh
-~/workspace/setup-my-workstation/setup-my-mac.sh
+gh repo create shellcraft-personal --private --source=. --push
 ```
 
-**Exercise:** Copy your `aliases.zsh` into the `setup-my-workstation` repo. Commit and push it. Your environment is now fully reproducible from a single `git clone`.
+**Exercise:** Copy `~/.config/shellcraft/local.zsh` into
+`~/workspace/shellcraft-personal/local.zsh`, initialize a git repo there, and
+commit the file.
 
 ---
 
@@ -615,8 +643,9 @@ cp ~/workspace/setup-my-workstation/aliases.zsh ~/.oh-my-zsh/custom/aliases.zsh
 - [ ] Used `rg` across your whole workspace to find something useful
 - [ ] Searched history with `Ctrl+R` for multi-word fragments
 - [ ] Verified `jq` and `yq` are installed
-- [ ] Added personal aliases to `~/.oh-my-zsh/custom/aliases.zsh` and reloaded
-- [ ] Backed up `aliases.zsh` to the `setup-my-workstation` repo and pushed
+- [ ] Used `gh` to inspect local auth or config state
+- [ ] Added personal aliases or exports to `~/.config/shellcraft/local.zsh` and reloaded
+- [ ] Copied `local.zsh` into a personal git repo and committed it
 
 ---
 

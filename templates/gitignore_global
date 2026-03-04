@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Env files
+.env
+.env.*
+
+# Node / frontend
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Archives
+*.zip
+*.tar
+*.tar.gz

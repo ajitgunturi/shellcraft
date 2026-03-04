@@ -1,0 +1,13 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install bats-core shellcheck shfmt markdownlint-cli actionlint yamllint hadolint ripgrep
+      - run: bats tests

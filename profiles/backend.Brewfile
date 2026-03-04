@@ -1,0 +1,8 @@
+brew "mise"
+brew "direnv"
+brew "xh"
+brew "grpcurl"
+brew "kubernetes-cli"
+brew "helm"
+brew "k9s"
+brew "kubectx"

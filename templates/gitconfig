@@ -1,0 +1,55 @@
+[core]
+    pager = delta
+    editor = nvim
+    excludesFile = ~/.config/shellcraft/gitignore_global
+    autocrlf = input
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    side-by-side = true
+    line-numbers = true
+    syntax-theme = Dracula
+
+[merge]
+    conflictstyle = zdiff3
+    tool = vimdiff
+
+[diff]
+    algorithm = histogram
+    colorMoved = default
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+    default = current
+
+[fetch]
+    prune = true
+
+[rerere]
+    enabled = true
+
+[init]
+    defaultBranch = main
+
+[alias]
+    st = status -sb
+    co = checkout
+    br = branch
+    cm = commit -m
+    ca = commit --amend --no-edit
+    lg = log --oneline --graph --decorate --all -20
+    ll = log --pretty=format:'%C(yellow)%h%C(reset) %C(green)%ad%C(reset) | %s %C(red)%d%C(reset) %C(blue)[%an]%C(reset)' --date=short --all
+    undo = reset --soft HEAD~1
+    wip = !git add -A && git commit -m 'WIP'
+    unwip = reset HEAD~1
+    recent = branch --sort=-committerdate --format='%(committerdate:relative)  %(refname:short)'
+    bl = blame -w -C -C -C
+    cleanup = !git branch --merged main | grep -v 'main' | xargs -n 1 git branch -d
+    stash-all = stash push --include-untracked
+    aliases = config --get-regexp alias

@@ -1,350 +1,229 @@
-# Mac Developer CLI Power Setup
+# Shellcraft
 
-> One script. Every tool. Apple Silicon + Intel. No prompts.
+Shellcraft bootstraps and maintains a macOS developer machine with:
 
-Run it on a fresh Mac to get a fully configured developer terminal in under 10 minutes. Run it again on an existing Mac to upgrade everything to the latest version.
+- profile-based package selection
+- preview-first execution
+- Shellcraft-managed include files instead of destructive dotfile rewrites
+- a maintainer toolchain for keeping this repo healthy
 
-### Option 1 — One-liner (no files saved, nothing to clean up)
+## Quick Start
 
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/ajitgunturi/shellcraft/main/setup-my-mac.sh)
-```
+Shellcraft now has two usage lanes:
 
-### Option 2 — Download, inspect, then run (recommended if you want to review first)
+- `make` for normal local usage after clone or download
+- `setup-my-mac.sh` for the one-line remote bootstrap flow
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/ajitgunturi/shellcraft/main/setup-my-mac.sh -o setup-my-mac.sh
-# open setup-my-mac.sh   ← inspect before running
-chmod +x setup-my-mac.sh
-./setup-my-mac.sh
-```
+### Local Usage With `make`
 
----
-
-## What You Get
-
-A terminal that looks and behaves like this:
-
-- **Powerlevel10k** prompt — git status, exit codes, execution time, directory depth, all at a glance
-- **Syntax highlighting** as you type — red for invalid commands, green for valid ones
-- **Autosuggestions** from history — accept with `→` or `Ctrl+Space`
-- **Fuzzy everything** — history, files, branches, commits, diffs, stashes, all via `fzf`
-- **Smart jumps** — `z proj` instead of `cd ~/workspace/my-project`
-- **Better defaults** — `ls` shows icons, `cat` highlights syntax, `grep` is instant, `diff` is side-by-side
-
----
-
-## What Gets Installed
-
-### CLI Tools (via Homebrew)
-
-| Tool | Replaces | What it does |
-|------|----------|--------------|
-| `eza` | `ls` | File listing with icons, git status, tree view |
-| `bat` | `cat` | Syntax-highlighted file viewing with line numbers |
-| `ripgrep` (`rg`) | `grep` | Recursive search, respects `.gitignore`, very fast |
-| `fd` | `find` | Simple, fast file finder with sane defaults |
-| `fzf` | — | Fuzzy finder — layers on top of history, files, git |
-| `zoxide` (`z`) | `cd` | Jump to directories by learned frequency |
-| `git-delta` | `git diff` | Side-by-side diffs with syntax highlighting |
-| `lazygit` | `git` TUI | Full terminal git interface |
-| `git-absorb` | `git commit --fixup` | Auto-detect fixup commits from staged changes |
-| `tmux` | Terminal tabs | Persistent sessions, split panes, detach/re-attach |
-| `htop` | `top` | Interactive process monitor |
-| `bat` | `cat` | Syntax-highlighted file viewing |
-| `jq` | — | JSON processing on the command line |
-| `yq` | — | YAML/JSON/TOML processing — same filter syntax as jq |
-| `tldr` | `man` | Practical command examples |
-| `neovim` | `vim` | Modern vim |
-| `tree` | — | Directory tree visualiser |
-| `wget` | — | File downloader |
-| `gnu-sed` (`gsed`) | BSD `sed` | GNU sed for script compatibility |
-
-### Zsh Stack
-
-| Component | Role |
-|-----------|------|
-| **Oh My Zsh** | Plugin framework and theme engine |
-| **Powerlevel10k** | Prompt theme — instant prompt, no lag |
-| **zsh-autosuggestions** | Fish-style inline history suggestions |
-| **zsh-syntax-highlighting** | Command line syntax colouring |
-| **MesloLGS Nerd Font** | Font required for Powerlevel10k icons |
-
-### Config Files Written
-
-| File | What it configures |
-|------|--------------------|
-| `~/.zshrc` | Shell, plugins, history, fzf, all aliases and functions |
-| `~/.gitconfig` | User info, delta pager, rerere, useful aliases |
-| `~/.gitignore_global` | macOS, editor, env, node, python ignores |
-| `~/.tmux.conf` | Prefix `Ctrl+a`, vim pane navigation, clipboard, status bar |
-| `~/.oh-my-zsh/custom/aliases.zsh` | Your personal aliases (never overwritten on re-run) |
-
----
-
-## Key Bindings
-
-### fzf
-
-| Binding | Action |
-|---------|--------|
-| `Ctrl+R` | Fuzzy search command history — `Ctrl+Y` copies without running |
-| `Ctrl+T` | Fuzzy file picker — inserts path at cursor |
-| `Alt+C` | Fuzzy `cd` — jump to any subdirectory |
-| `Ctrl+Space` | Accept autosuggestion |
-| `→` | Accept autosuggestion (alternative) |
-| `**<Tab>` | Fuzzy completion for current argument |
-
-### Git Fuzzy Shortcuts
-
-| Alias | Full name | Action |
-|-------|-----------|--------|
-| `gb` | `fgb` | Fuzzy branch switch with log preview |
-| `gl` | `fgl` | Fuzzy log browser — copies selected hash to clipboard |
-| `ga` | `fga` | Fuzzy interactive `git add` — `Tab` to multi-select |
-| `gs` | `fgs` | Fuzzy stash browser with diff preview |
-| `gd` | `fgd` | Fuzzy diff browser — changed files with delta preview |
-
-### tmux (prefix = `Ctrl+a`)
-
-| Binding | Action |
-|---------|--------|
-| `Ctrl+a \|` | Vertical split |
-| `Ctrl+a -` | Horizontal split |
-| `Ctrl+a h/j/k/l` | Navigate panes (vim keys) |
-| `Ctrl+a z` | Zoom current pane to full screen |
-| `Ctrl+a c` | New window |
-| `Ctrl+a ,` | Rename window |
-| `Ctrl+a w` | Fuzzy window/session picker |
-| `Ctrl+a [` | Scroll / copy mode (`v` to select, `y` to yank) |
-| `Ctrl+a d` | Detach session (keeps running in background) |
-| `Ctrl+a r` | Reload `~/.tmux.conf` live |
-
----
-
-## Shell Aliases & Functions
-
-### Command Replacements
-
-```zsh
-ls    → eza --icons --group-directories-first
-ll    → eza -la --icons --group-directories-first
-lt    → eza -la --icons --tree --level=2
-la    → eza -a  --icons --group-directories-first
-cat   → bat --paging=never
-grep  → rg
-find  → fd
-top   → htop
-diff  → delta
-```
-
-### Navigation
-
-```zsh
-..        cd ..
-...       cd ../..
-....      cd ../../..
-z <frag>  jump to a learned directory by fragment
-zi        interactive fuzzy directory picker
-cls       clear
-```
-
-### Git Aliases (in `.gitconfig`)
-
-```zsh
-git st       status -sb
-git lg       log --oneline --graph --all -20
-git ll       detailed log with date and author
-git co       checkout
-git cm       commit -m
-git ca       commit --amend --no-edit
-git undo     reset --soft HEAD~1   (uncommit, keep changes staged)
-git wip      add -A && commit -m 'WIP'
-git unwip    reset HEAD~1
-git recent   branches sorted by last commit date
-git cleanup  delete branches merged into main
-git bl       blame -w -C -C -C    (ignore whitespace + move detection)
-```
-
-### Utility Functions
-
-```zsh
-mkcd <dir>       mkdir -p <dir> && cd into it
-extract <file>   extract any archive (.tar.gz, .zip, .7z, ...)
-note <text>      append timestamped note to ~/notes.md
-```
-
-### Shell Shortcuts
-
-```zsh
-reload    source ~/.zshrc
-h         history | tail -30
-hg <term> history | rg <term>
-ports     lsof -i listening ports
-myip      your public IP
-path      PATH entries one per line
-brewup    brew update && upgrade && cleanup
-```
-
----
-
-## History Configuration
-
-100,000 entries, shared across sessions, with these options active:
-
-| Option | Effect |
-|--------|--------|
-| `SHARE_HISTORY` | All open terminals see each other's commands in real time |
-| `HIST_IGNORE_ALL_DUPS` | No duplicate entries |
-| `HIST_IGNORE_SPACE` | Commands prefixed with a space are not saved (useful for secrets) |
-| `INC_APPEND_HISTORY` | Written immediately, not on shell exit |
-| `EXTENDED_HISTORY` | Timestamps stored with every entry |
-
----
-
-## How It Works
-
-```
-setup-my-mac.sh (stored anywhere, e.g. ~/workspace/setup-my-workstation/)
-│
-│   ← script immediately cds to $HOME; all writes use absolute paths
-│
-├── 1/7  Xcode Command Line Tools     softwareupdate or xcode-select --install
-├── 2/7  Homebrew                     install + brew update, PATH for arm64 + x86
-├── 3/7  CLI Tools                    brew install missing, brew upgrade outdated
-├── 4/7  Oh My Zsh                    install or git pull to update
-├── 5/7  Zsh Plugins & Theme          install or git pull: p10k, autosuggestions,
-│                                     syntax-highlighting, MesloLGS Nerd Font
-├── 6/7  Generating Config Files      write .zshrc, .gitconfig, .gitignore_global,
-│                                     .tmux.conf directly to $HOME;
-│                                     aliases.zsh → $ZSH_CUSTOM (auto-loaded, preserved)
-└── 7/7  Final Health Check           verify every component, print pass/fail/skip report
-```
-
-Each stage:
-- Verifies success after running
-- Prints a troubleshooting hint on any failure
-- Is fully **idempotent** — safe to re-run; existing installs are upgraded, not re-installed
-- Backs up any config file it would overwrite to `~/.dotfiles-backup/<timestamp>/`
-- Writes all output files to absolute `$HOME`-based paths — **location of the script does not matter**
-
----
-
-## Upgrade Behaviour
-
-Running the script on an already-configured machine:
-
-| Component | Upgrade mechanism |
-|-----------|-------------------|
-| Homebrew | `brew update` |
-| CLI packages | `brew outdated` diff → `brew upgrade` for changed packages only |
-| Oh My Zsh | `git pull` in `~/.oh-my-zsh` |
-| Powerlevel10k | `git pull` in `$ZSH_CUSTOM/themes/powerlevel10k` |
-| zsh-autosuggestions | `git pull` in `$ZSH_CUSTOM/plugins/zsh-autosuggestions` |
-| zsh-syntax-highlighting | `git pull` in `$ZSH_CUSTOM/plugins/zsh-syntax-highlighting` |
-| MesloLGS Nerd Font | `brew upgrade --cask` |
-| Config files | Rewritten from template (backup created first) |
-| `aliases.zsh` | **Never overwritten** — your customisations are preserved |
-
----
-
-## Compatibility
-
-| | |
-|-|-|
-| **macOS** | 12 Monterey · 13 Ventura · 14 Sonoma · 15 Sequoia |
-| **Architecture** | Apple Silicon (arm64) · Intel (x86_64) |
-| **Shell** | Runs under system `/bin/bash` 3.2 — no bash 4+ required |
-| **Run location** | Anywhere — script `cd`s to `$HOME` automatically before doing any work |
-| **Sudo** | Required once at start; kept alive for the duration |
-| **Network** | Required — downloads Homebrew, OMZ, plugins, fonts |
-| **Disk** | ~1–2 GB for all tools and fonts |
-
-> **Note on bash 3.2:** macOS ships with bash 3.2 (GPL v2) and will not update it. This script avoids `declare -A` associative arrays and other bash 4+ features specifically to remain compatible with the system shell.
-
----
-
-## After Running
+Start with a safe preview:
 
 ```bash
-# 1. Restart your terminal (or source ~/.zshrc)
-source ~/.zshrc
-
-# 2. Set your terminal font to "MesloLGS NF"
-#    iTerm2: Preferences → Profiles → Text → Font
-#    Terminal.app: Preferences → Profiles → Font
-
-# 3. Configure your prompt (optional — p10k ships with a wizard)
-p10k configure
-
-# 4. Set your git identity
-git config --global user.name  "Your Name"
-git config --global user.email "you@example.com"
-
-# 5. Add your own shortcuts
-vim ~/.oh-my-zsh/custom/aliases.zsh
+make plan PROFILE=core
 ```
 
----
-
-## Customisation
-
-**Add your own aliases** — the only file you should edit freely:
+Apply the default profile after reviewing the plan:
 
 ```bash
-~/.oh-my-zsh/custom/aliases.zsh
+make install PROFILE=core
 ```
 
-It is auto-loaded by Oh My Zsh on every shell start and is **never overwritten** when you re-run `setup-my-mac.sh`.
-
-**Add your own Oh My Zsh plugins** — drop any `*.zsh` file into:
+Common follow-up commands:
 
 ```bash
-~/.oh-my-zsh/custom/
+make doctor PROFILE=core
+make fix PROFILE=core
+make install PROFILE=core,backend,ai
+make install PROFILE=containers WITH_FONTS=1 SET_DEFAULT_SHELL=1
 ```
 
-Oh My Zsh sources all `*.zsh` files in this directory automatically.
+### If `make` Is Missing
 
----
-
-## Files in This Repository
-
-```
-setup-my-mac.sh          Main setup and upgrade script
-exercises/terminal-exercises.md    6-day hands-on exercise programme for every tool
-exercises/k8s-exercises.md         Kubernetes-specific yq & jq exercises (querying/patching manifests)
-CONTRIBUTING.md                    How to add tools, write exercises, and test changes
-README.md                This file
-```
-
----
-
-## Log & Troubleshooting
-
-The full log of every action is written to:
-
-```
-~/.mac-dev-setup.log
-```
-
-If a step fails, the script prints a specific troubleshooting hint inline. To see everything:
+On macOS, `make` comes from Xcode Command Line Tools. If your machine does not
+have `make` yet, bootstrap Shellcraft once with the remote installer:
 
 ```bash
-cat ~/.mac-dev-setup.log
+URL="https://raw.githubusercontent.com/ajitgunturi/shellcraft/main/setup-my-mac.sh"
+bash <(curl -fsSL "$URL") --apply --profile core
 ```
 
-Common fixes:
+That installs the shellcraft `core` profile and gives the machine Xcode Command
+Line Tools, which includes `make`. After that, reopen your shell or run:
 
-| Problem | Fix |
-|---------|-----|
-| `brew: command not found` after install | Run `eval "$(/opt/homebrew/bin/brew shellenv)"` then retry |
-| Powerlevel10k shows boxes instead of icons | Set terminal font to **MesloLGS NF** |
-| `p10k` prompt not loading | Run `p10k configure` |
-| Xcode CLI tools hang | Run `sudo xcode-select --reset` |
-| A package fails to upgrade | Run `brew doctor` then `brew upgrade <package>` manually |
+```bash
+exec zsh -l
+make plan PROFILE=core
+```
 
----
+### Single-Command Remote Install
 
-## License
+Preview-only remote run:
 
-MIT — use freely, modify freely, share freely.
+```bash
+URL="https://raw.githubusercontent.com/ajitgunturi/shellcraft/main/setup-my-mac.sh"
+bash <(curl -fsSL "$URL")
+```
+
+Install immediately with the default `core` profile:
+
+```bash
+URL="https://raw.githubusercontent.com/ajitgunturi/shellcraft/main/setup-my-mac.sh"
+bash <(curl -fsSL "$URL") --apply --profile core
+```
+
+This remote path bypasses the `Makefile` and runs the Shellcraft engine
+directly.
+
+## User Interface
+
+`make` is the primary local interface for users:
+
+```bash
+make
+make help
+make plan PROFILE=core
+make install PROFILE=core
+make doctor PROFILE=core
+make fix PROFILE=core
+```
+
+Supported variables:
+
+- `PROFILE`
+  Comma-separated profiles, for example `PROFILE=core,backend`
+- `WITH_FONTS`
+  `0` or `1`
+- `SET_DEFAULT_SHELL`
+  `0` or `1`
+- `ALLOW_GUI_INSTALLS`
+  `0` or `1`
+
+Notes:
+
+- `make` with no target prints help
+- `PROFILE` defaults to `core`
+- `PROFILE` must not be empty
+- profile lists are comma-separated without spaces
+
+### Direct Engine Usage
+
+`./setup-my-mac.sh` remains available for advanced or direct usage:
+
+```bash
+./setup-my-mac.sh --plan --profile core
+./setup-my-mac.sh --apply --profile core --profile maintainer
+./setup-my-mac.sh --doctor --profile core
+./setup-my-mac.sh --doctor --fix --profile core
+```
+
+## Profiles
+
+- `core`: daily terminal baseline
+  Key tools: `git`, `tmux`, `fzf`, `ripgrep`, `jq`, `yq`, `gh`, `neovim`
+- `backend`: API and Kubernetes workflow
+  Key tools: `mise`, `direnv`, `xh`, `grpcurl`, `kubectl`, `helm`, `k9s`,
+  `kubectx`
+- `ai`: lightweight AI and Python workflow
+  Key tools: `uv`
+- `maintainer`: keep Shellcraft itself healthy
+  Key tools: `shellcheck`, `shfmt`, `bats-core`, `pre-commit`, `go-task`,
+  `markdownlint-cli`, `actionlint`, `yamllint`, `hadolint`
+- `containers`: local container runtime
+  Key tools: `colima`, `docker`, `docker-compose`
+- `local-ai`: local model runtime
+  Key tools: `ollama`
+
+`--profile all` expands to every profile above.
+
+## Safety Model
+
+Shellcraft is intentionally conservative:
+
+- `--plan` is the default mode
+- top-level dotfiles are not overwritten wholesale
+- missing Git identity is reported, never auto-filled with placeholders
+- login shell changes are opt-in
+- font installation is opt-in
+- GUI-assisted Xcode Command Line Tools installation is opt-in
+
+## Managed Config Layout
+
+Shellcraft writes managed files under:
+
+```bash
+~/.config/shellcraft/
+```
+
+Managed files:
+
+- `zprofile.sh`
+- `zshrc.zsh`
+- `gitconfig`
+- `tmux.conf`
+- `gitignore_global`
+- `state.env`
+
+User-owned file:
+
+- `local.zsh`
+
+Top-level files are adopted via a single include/source block:
+
+- `~/.zprofile` sources `~/.config/shellcraft/zprofile.sh`
+- `~/.zshrc` sources `~/.config/shellcraft/zshrc.zsh`
+- `~/.gitconfig` includes `~/.config/shellcraft/gitconfig`
+- `~/.tmux.conf` sources `~/.config/shellcraft/tmux.conf`
+
+## Maintainer Workflow
+
+`task` is for maintainers and repository checks, not first-run user setup.
+
+Install the `maintainer` profile on a Shellcraft machine, then use:
+
+```bash
+task lint
+task fmt-check
+task test
+task smoke-fresh
+task smoke-existing
+task doctor
+```
+
+Pre-commit hooks are defined in `.pre-commit-config.yaml`.
+
+## Repository Layout
+
+```text
+Makefile                    User-facing local wrapper
+setup-my-mac.sh             Shellcraft engine
+profiles/*.Brewfile         Profile package definitions
+lib/*.sh                    Planner, config adoption, verification helpers
+templates/*                 Managed config templates
+tests/*.bats                Temp-HOME smoke tests
+Taskfile.yml                Maintainer tasks
+.pre-commit-config.yaml     Maintainer hooks
+exercises/*.md              Learning material
+```
+
+Exercise guides currently available:
+
+- `exercises/terminal-exercises.md`: `core` profile exercises
+- `exercises/maintainer-exercises.md`: `maintainer` profile exercises
+- `exercises/k8s-exercises.md`: Kubernetes-focused `yq` and `jq` follow-up
+
+## Scope
+
+In scope:
+
+- macOS
+- Homebrew-managed tooling
+- free CLI tools
+- safe bootstrap and ongoing machine maintenance
+
+Out of scope:
+
+- paid tools
+- sign-in-required defaults
+- Linux support
+- GUI app management other than optional fonts
+- package managers other than Homebrew
