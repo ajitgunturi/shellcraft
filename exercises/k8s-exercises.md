@@ -3,6 +3,7 @@
 > **Prerequisites:** Complete Day 6 of `terminal-exercises.md` first — this file assumes you know `jq` filters, `select()`, `map()`, and basic `yq` usage.
 >
 > **Tools needed:** `yq` (v4.x mikefarah), `jq`, `bat`, `rg`
+>
 > ```zsh
 > yq --version   # v4.x
 > jq --version   # 1.6+

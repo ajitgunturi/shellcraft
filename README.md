@@ -190,6 +190,8 @@ task doctor
 ```
 
 Pre-commit hooks are defined in `.pre-commit-config.yaml`.
+At commit time, pre-commit runs `task lint` as a repo-wide lint pass and
+reports the full repository state.
 
 ## Repository Layout
 

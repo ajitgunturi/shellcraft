@@ -652,6 +652,7 @@ commit the file.
 ## Quick Reference Card
 
 ### Key Bindings
+
 | Binding | Action |
 |---------|--------|
 | `Ctrl+R` | Fuzzy history search |
@@ -662,6 +663,7 @@ commit the file.
 | `**<Tab>` | Fuzzy completion for current command |
 
 ### Command Replacements
+
 | Old | New | Why |
 |-----|-----|-----|
 | `ls` / `ls -la` | `ls` / `ll` | eza: icons, git status, colors |
@@ -674,6 +676,7 @@ commit the file.
 | `man` | `tldr` | tldr: practical examples first |
 
 ### tmux Prefix = `Ctrl+a`
+
 | Binding | Action |
 |---------|--------|
 | `d` | Detach session |
@@ -688,6 +691,7 @@ commit the file.
 | `r` | Reload config |
 
 ### Git Aliases (your .gitconfig)
+
 | Alias | Expands to |
 |-------|-----------|
 | `git st` | `status -sb` |
@@ -700,6 +704,7 @@ commit the file.
 | `git cleanup` | delete merged branches |
 
 ### Git FZF Shortcuts (your .zshrc)
+
 | Alias | Action |
 |-------|--------|
 | `gb` | Fuzzy branch switch |
@@ -715,6 +720,7 @@ commit the file.
 **Goal:** Slice, filter, reshape, group, and export structured data without leaving the terminal.
 
 > **Setup check:**
+>
 > ```zsh
 > jq --version    # should print jq-1.7 or newer
 > yq --version    # should print v4.x (mikefarah/yq)

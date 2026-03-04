@@ -1,6 +1,7 @@
 # Contributing
 
-Shellcraft is now profile-driven and safety-first. Contributions should preserve both properties.
+Shellcraft is now profile-driven and safety-first. Contributions should
+preserve both properties.
 
 ## What belongs here
 
@@ -38,7 +39,11 @@ Managed config templates live in:
 
 - `templates/*`
 
-The only public entrypoint is:
+User-facing local commands live in:
+
+- `Makefile`
+
+Engine behavior lives in:
 
 - `setup-my-mac.sh`
 
@@ -57,11 +62,13 @@ profiles/containers.Brewfile
 profiles/local-ai.Brewfile
 ```
 
-Do not default new tools into `core` unless they are broadly useful to nearly every machine.
+Do not default new tools into `core` unless they are broadly useful to nearly
+every machine.
 
 ### 2. Map formula name to command name if needed
 
-If the binary name differs from the formula name, update `formula_cmd()` in [lib/profile_metadata.sh](/Users/ajitg/workspace/shellcraft/lib/profile_metadata.sh).
+If the binary name differs from the formula name, update `formula_cmd()` in
+[lib/profile_metadata.sh](/Users/ajitg/workspace/shellcraft/lib/profile_metadata.sh).
 
 Examples:
 
@@ -96,7 +103,8 @@ These are non-negotiable:
 - Shellcraft must never write placeholder Git identity
 - system-level changes must remain opt-in flags
 
-If a change makes Shellcraft more convenient but less predictable on an existing machine, it is the wrong change.
+If a change makes Shellcraft more convenient but less predictable on an
+existing machine, it is the wrong change.
 
 ## Bash Constraints
 
@@ -106,9 +114,11 @@ Avoid:
 
 - associative arrays
 - Bash 4+ only parameter features
-- dependencies on GNU-only shell behavior unless the code is already running after Homebrew bootstrap
+- dependencies on GNU-only shell behavior unless the code is already running
+  after Homebrew bootstrap
 
-Shellcraft intentionally avoids `set -e`. Handle failures explicitly and report them clearly.
+Shellcraft intentionally avoids `set -e`. Handle failures explicitly and
+report them clearly.
 
 ## Test Expectations
 
@@ -131,6 +141,13 @@ After installing the `maintainer` profile:
 task lint
 task fmt-check
 task test
+pre-commit run --all-files
 ```
 
-If `bats` is not installed locally, you can still run the smoke scenarios by sourcing `tests/test_helper.bash` and invoking `setup-my-mac.sh` under a temp `HOME`.
+If `bats` is not installed locally, you can still run the smoke scenarios by
+sourcing `tests/test_helper.bash` and invoking `setup-my-mac.sh` under a temp
+`HOME`.
+
+At commit time, pre-commit runs `task lint` as a repo-wide lint pass. If the
+repo has any lint failures, the commit is blocked and pre-commit reports the
+full set of findings from that run.

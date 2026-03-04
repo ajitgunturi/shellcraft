@@ -3,36 +3,36 @@
 load test_helper
 
 setup() {
-    setup_test_env
+	setup_test_env
 }
 
 @test "apply creates managed includes and selected profile state on a fresh home" {
-    export SHELLCRAFT_TEST_BREW_OUTDATED="fzf"
+	export SHELLCRAFT_TEST_BREW_OUTDATED="fzf"
 
-    run bash "$BATS_TEST_DIRNAME/../setup-my-mac.sh" --apply --profile core --profile maintainer
+	run bash "$BATS_TEST_DIRNAME/../setup-my-mac.sh" --apply --profile core --profile maintainer
 
-    [ "$status" -eq 0 ]
-    [ -f "$HOME/.config/shellcraft/zshrc.zsh" ]
-    [ -f "$HOME/.config/shellcraft/gitconfig" ]
-    [ -f "$HOME/.config/shellcraft/state.env" ]
-    [ -f "$HOME/.config/shellcraft/local.zsh" ]
-    assert_file_contains "$HOME/.zshrc" "$HOME/.config/shellcraft/zshrc.zsh"
-    assert_file_contains "$HOME/.gitconfig" "path = ~/.config/shellcraft/gitconfig"
-    assert_file_contains "$HOME/.tmux.conf" "source-file ~/.config/shellcraft/tmux.conf"
-    assert_file_contains "$HOME/.config/shellcraft/state.env" 'SHELLCRAFT_PROFILES="core,maintainer"'
-    assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" "zsh-autosuggestions"
-    [[ "$(cat "$HOME/.config/shellcraft/zshrc.zsh")" != *"kubectl"* ]]
-    [[ "$(cat "$HOME/.config/shellcraft/zshrc.zsh")" != *"docker"* ]]
-    assert_file_contains "$HOME/.brew-state" "gh"
-    assert_file_contains "$HOME/.brew-state" "shellcheck"
-    assert_file_contains "$HOME/.brew-state" "markdownlint-cli"
+	[ "$status" -eq 0 ]
+	[ -f "$HOME/.config/shellcraft/zshrc.zsh" ]
+	[ -f "$HOME/.config/shellcraft/gitconfig" ]
+	[ -f "$HOME/.config/shellcraft/state.env" ]
+	[ -f "$HOME/.config/shellcraft/local.zsh" ]
+	assert_file_contains "$HOME/.zshrc" "$HOME/.config/shellcraft/zshrc.zsh"
+	assert_file_contains "$HOME/.gitconfig" "path = ~/.config/shellcraft/gitconfig"
+	assert_file_contains "$HOME/.tmux.conf" "source-file ~/.config/shellcraft/tmux.conf"
+	assert_file_contains "$HOME/.config/shellcraft/state.env" 'SHELLCRAFT_PROFILES="core,maintainer"'
+	assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" "zsh-autosuggestions"
+	[[ "$(cat "$HOME/.config/shellcraft/zshrc.zsh")" != *"kubectl"* ]]
+	[[ "$(cat "$HOME/.config/shellcraft/zshrc.zsh")" != *"docker"* ]]
+	assert_file_contains "$HOME/.brew-state" "gh"
+	assert_file_contains "$HOME/.brew-state" "shellcheck"
+	assert_file_contains "$HOME/.brew-state" "markdownlint-cli"
 }
 
 @test "profile-aware zsh config only enables backend and container plugins when selected" {
-    run bash "$BATS_TEST_DIRNAME/../setup-my-mac.sh" --apply --profile core --profile backend --profile containers
+	run bash "$BATS_TEST_DIRNAME/../setup-my-mac.sh" --apply --profile core --profile backend --profile containers
 
-    [ "$status" -eq 0 ]
-    assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" "kubectl"
-    assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" "docker"
-    assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" 'alias dco="docker compose"'
+	[ "$status" -eq 0 ]
+	assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" "kubectl"
+	assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" "docker"
+	assert_file_contains "$HOME/.config/shellcraft/zshrc.zsh" 'alias dco="docker compose"'
 }

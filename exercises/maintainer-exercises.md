@@ -70,7 +70,7 @@ pre-commit install
 ```
 
 **Exercise:** Run `pre-commit run --all-files`. Confirm you can execute the
-full hook chain locally before committing.
+same repo-wide `task lint` pass locally before committing.
 
 ---
 
